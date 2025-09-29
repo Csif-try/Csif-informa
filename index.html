@@ -851,7 +851,7 @@
         users.forEach(user => {
             const option = document.createElement('option');
             option.value = user.username;
-            option.textContent = ${user.name} (${user.role});
+            option.textContent = `${user.name} (${user.role})`;
             usernameSelect.appendChild(option);
         });
         
@@ -955,7 +955,7 @@
                 // Mostrar panel correspondiente
                 adminPanels.forEach(panel => {
                     panel.classList.remove('active');
-                    if (panel.id === ${tabId}-panel) {
+                    if (panel.id === `${tabId}-panel`) {
                         panel.classList.add('active');
                     }
                 });
@@ -1138,7 +1138,7 @@
                 
                 // Mostrar subnavegación correspondiente si no es "todas"
                 if (category !== 'todas') {
-                    const subNav = document.getElementById(subnav-${category});
+                    const subNav = document.getElementById(`subnav-${category}`);
                     if (subNav) {
                         subNav.classList.add('active');
                         
