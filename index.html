@@ -604,13 +604,18 @@
                                 <option value="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</option>
                                 <option value="CELADOR">CELADOR</option>
                                 <option value="TECNICO_LABORATORIO">TÉCNICO DE LABORATORIO</option>
-                                <option value="MEDICINA">MEDICINA
+                                <option value="MEDICINA">MEDICINA</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="newsSubcategory">Subcategoría:</label>
                             <select id="newsSubcategory" required>
-                                <option value="">-- Selecciona subcategoría --</option>
+                                <option value="">-- Selecciona categoría --</option>
+                                <option value="ODONTOLOGIA">ODONTOLOGIA</option>
+                                <option value="VACSULAR">VASCULAR</option>
+                                <option value="GINECOLOGIA">GINECOLOGIA</option>
+                                <option value="TRAUMATOLOGIA">TRAUMATOLOGIA</option>
+                                <option value="UROLOGIA">UROLOGIA</option>
                             </select>
                         </div>
                     </div>
@@ -880,7 +885,12 @@
             AUXILIAR_ADMINISTRATIVO: ["concursos", "traslados", "formacion", "convenio", "oposiciones"],
             CELADOR: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
             TECNICO_LABORATORIO: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
-            MEDICINA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"]
+            MEDICINA: ["ODONTOLOGIA", "TRAUMATOLOGIA", "VASCULAR", "GINECOLOGIA", "UROLOGIA"],
+            ODONTOLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
+            TRAUMATOLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
+            VASCULAR: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
+            GINECOLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
+            UROLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
         };
         
         newsCategorySelect.addEventListener('change', function() {
