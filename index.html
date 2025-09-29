@@ -886,19 +886,34 @@
         });
         
         // Configurar subcategorías dinámicas
-        const subcategoriesMap = {
+        const subclassMap = {
+            MEDICINA: ["ODONTOLOGIA", "TRAUMATOLOGIA", "VASCULAR", "GINECOLOGIA", "UROLOGIA"]
+
+        };
+        
+        newsCategorySelect.addEventListener('change', function() {
+            const category = this.value;
+            newsSubcategorySelect.innerHTML = '<option value="">-- Selecciona subcategoría --</option>';
+            
+            if (category && subclassMap[category]) {
+                subclassMap[category].forEach(sub => {
+                    const option = document.createElement('option');
+                    option.value = sub;
+                    option.textContent = sub.charAt(0).toUpperCase() + sub.slice(1);
+                    newsSubclassSelect.appendChild(option);
+                });
+               const subcategoriesMap = {
             ENFERMERIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
             TCAE: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
             ADMINISTRATIVO: ["concursos", "traslados", "formacion", "convenio", "oposiciones"],
             AUXILIAR_ADMINISTRATIVO: ["concursos", "traslados", "formacion", "convenio", "oposiciones"],
             CELADOR: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
-            TECNICO_LABORATORIO: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
-            MEDICINA: ["ODONTOLOGIA", "TRAUMATOLOGIA", "VASCULAR", "GINECOLOGIA", "UROLOGIA"],
+            TECNICO_LABORATORIO: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],           
             ODONTOLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
             TRAUMATOLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
             VASCULAR: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
             GINECOLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
-            UROLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"],
+            UROLOGIA: ["plantillas", "turnos", "formacion", "convenio", "oposiciones"]
         };
         
         newsCategorySelect.addEventListener('change', function() {
@@ -910,8 +925,7 @@
                     const option = document.createElement('option');
                     option.value = sub;
                     option.textContent = sub.charAt(0).toUpperCase() + sub.slice(1);
-                    newsSubcategorySelect.appendChild(option);
-                });
+                    newsSubcategorySelect.appendChild(option);  
             }
         });
         
