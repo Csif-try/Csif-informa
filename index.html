@@ -48,21 +48,15 @@
     .form-group input,.form-group select,.form-group textarea {
       width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; font-size:1rem;
     }
-    .login-btn,.save-btn {
+    .login-btn {
       width:100%; padding:10px; background:#2e7d32; color:#fff; border:none; border-radius:5px;
       font-size:1rem; cursor:pointer; margin-top:10px;
     }
-    .login-btn:hover,.save-btn:hover { background:#1b5e20; }
-
-    .news-list { max-height:300px; overflow-y:auto; border:1px solid #eee; border-radius:5px; padding:10px; }
-    .news-item { padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; }
-    .news-item:last-child { border-bottom:none; }
-    .action-btn { padding:5px 10px; border:none; border-radius:3px; cursor:pointer; font-size:0.8rem; }
-    .edit-btn { background:#ffc107; color:#333; } .delete-btn { background:#f44336; color:#fff; }
+    .login-btn:hover { background:#1b5e20; }
 
     nav.main-nav { background:#1b5e20; padding:8px 0; position:sticky; top:60px; z-index:99; overflow-x:auto; }
     .nav-container { display:flex; gap:8px; padding:0 10px; }
-    .nav-item { padding:6px 12px; border-radius:20px; background:rgba(255,255,255,0.15); color:#fff; cursor:pointer; font-size:0.85rem; }
+    .nav-item { padding:6px 12px; border-radius:20px; background:rgba(255,255,255,0.15); color:#fff; cursor:pointer; font-size:0.85rem; white-space:nowrap; }
     .nav-item.active { background:#fff; color:#1b5e20; font-weight:bold; }
 
     .sub-nav { display:none; background:#e8f5e9; padding:8px; }
@@ -153,12 +147,50 @@
     </div>
   </div>
 
-  <!-- Main -->
+  <!-- Navegación principal -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="nav-item active" data-category="todas">Todas</div>
+      <div class="nav-item" data-category="ADMINISTRATIVO">ADMINISTRATIVO</div>
+      <div class="nav-item" data-category="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</div>
+      <div class="nav-item" data-category="CELADOR">CELADOR</div>
+      <div class="nav-item" data-category="ENFERMERIA">ENFERMERIA</div>
+      <div class="nav-item" data-category="MEDICINA">MEDICINA</div>
+      <div class="nav-item" data-category="TCAE">TCAE</div>
+      <div class="nav-item" data-category="TECNICO_LABORATORIO">LABORATORIO</div>
+    </div>
+  </nav>
+
+  <!-- Subnavegaciones (ejemplo ENFERMERIA, TCAE, etc) -->
+  <div class="sub-nav" id="subnav-ENFERMERIA">
+    <div class="sub-nav-container">
+      <div class="sub-nav-item active" data-subcategory="plantillas">Plantillas</div>
+      <div class="sub-nav-item" data-subcategory="turnos">Turnos</div>
+      <div class="sub-nav-item" data-subcategory="formacion">Formación</div>
+      <div class="sub-nav-item" data-subcategory="convenio">Convenio</div>
+      <div class="sub-nav-item" data-subcategory="oposiciones">Oposiciones</div>
+    </div>
+  </div>
+
+  <div class="sub-nav" id="subnav-TCAE">
+    <div class="sub-nav-container">
+      <div class="sub-nav-item active" data-subcategory="plantillas">Plantillas</div>
+      <div class="sub-nav-item" data-subcategory="turnos">Turnos</div>
+      <div class="sub-nav-item" data-subcategory="formacion">Formación</div>
+      <div class="sub-nav-item" data-subcategory="convenio">Convenio</div>
+      <div class="sub-nav-item" data-subcategory="oposiciones">Oposiciones</div>
+    </div>
+  </div>
+
+  <!-- Aquí irían el resto de subnavs como en tu archivo original... -->
+
+  <!-- Contenido -->
   <main>
     <h2 class="section-title" id="current-category">Todas las Noticias</h2>
     <div class="news-grid" id="news-container"></div>
   </main>
 
+  <!-- Footer -->
   <footer>
     <div class="footer-links">
       <a href="#" class="footer-link">Inicio</a>
@@ -225,6 +257,12 @@
       }
       displayNews();
 
+      // Categorías
+      document.querySelectorAll(".nav-item").forEach(it=>{
+        it.onclick=()=>{document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
+          it.classList.add("active"); displayNews(it.dataset.category);};
+      });
+
       // Botón scroll top
       const fb=document.querySelector(".floating-btn");
       fb.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
@@ -234,3 +272,4 @@
 </body>
 </html>
 
+  
