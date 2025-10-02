@@ -144,8 +144,8 @@
       </div>
       <form id="loginForm">
         <div class="form-group">
-          <label for="username">Selecciona tu usuario:</label>
-          <select id="username" required></select>
+          <label for="username">Introduce tu usuario:</label>
+          <input type="text" id="username" name="fname"><br><br>
         </div>
         <button type="submit" class="login-btn">Acceder</button>
       </form>
@@ -153,54 +153,7 @@
     </div>
   </div>
 
-  <!-- Modal Admin -->
-  <div class="admin-modal" id="adminModal">
-    <div class="admin-modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Panel de Administración</h2>
-        <button class="close-btn" id="closeAdminModal">&times;</button>
-      </div>
-      <h3>Gestión de Noticias</h3>
-      <form id="newsForm">
-        <div class="form-group"><label>Categoría:</label>
-          <select id="newsCategory" required>
-            <option value="">-- Selecciona --</option>
-            <option value="ENFERMERIA">ENFERMERIA</option>
-            <option value="TCAE">TCAE</option>
-            <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-            <option value="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</option>
-            <option value="CELADOR">CELADOR</option>
-            <option value="TECNICO_LABORATORIO">TÉCNICO DE LABORATORIO</option>
-            <option value="MEDICINA">MEDICINA</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Subcategoría:</label>
-          <select id="newsSubcategory" required><option value="">-- Selecciona --</option></select>
-        </div>
-        <div class="form-group"><label>Título:</label><input type="text" id="newsTitle" required></div>
-        <div class="form-group"><label>Resumen:</label><textarea id="newsExcerpt" rows="3" required></textarea></div>
-        <div class="form-group"><label>URL Imagen:</label><input type="text" id="newsImage" required></div>
-        <button type="submit" class="save-btn">Guardar</button>
-      </form>
-      <h3 style="margin-top:20px;">Noticias Existentes</h3>
-      <div class="news-list" id="newsList"></div>
-    </div>
-  </div>
-
-  <!-- Navegación -->
-  <nav class="main-nav">
-    <div class="nav-container">
-      <div class="nav-item active" data-category="todas">Todas</div>
-      <div class="nav-item" data-category="ADMINISTRATIVO">ADMINISTRATIVO</div>
-      <div class="nav-item" data-category="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMIN.</div>
-      <div class="nav-item" data-category="CELADOR">CELADOR</div>
-      <div class="nav-item" data-category="ENFERMERIA">ENFERMERIA</div>
-      <div class="nav-item" data-category="MEDICINA">MEDICINA</div>
-      <div class="nav-item" data-category="TCAE">TCAE</div>
-      <div class="nav-item" data-category="TECNICO_LABORATORIO">LABORATORIO</div>
-    </div>
-  </nav>
-
+  <!-- Main -->
   <main>
     <h2 class="section-title" id="current-category">Todas las Noticias</h2>
     <div class="news-grid" id="news-container"></div>
@@ -227,7 +180,6 @@
       { username:"00000002A", name:"Carlos Rodríguez", role:"Afiliado" }
     ];
 
-    // Noticias demo
     let newsData = { todas:[
       {id:1,category:"ENFERMERIA",subcategory:"plantillas",title:"CSIF logra aumento de plantilla",excerpt:"Contratación de 200 nuevos profesionales",image:"https://via.placeholder.com/400x200?text=Enfermería",date:"Hace 2h"},
       {id:2,category:"TCAE",subcategory:"turnos",title:"Mejoras en los turnos TCAE",excerpt:"Negociación de rotación de turnos",image:"https://via.placeholder.com/400x200?text=TCAE",date:"Hace 5h"}
@@ -238,22 +190,15 @@
       closeModal=document.getElementById("closeModal"), loginForm=document.getElementById("loginForm"),
       userInfo=document.getElementById("userInfo"), userName=document.getElementById("userName"),
       logoutBtn=document.getElementById("logoutBtn"), loginMessage=document.getElementById("loginMessage"),
-      usernameSelect=document.getElementById("username"), adminBtn=document.getElementById("adminBtn"),
-      adminModal=document.getElementById("adminModal"), closeAdminModal=document.getElementById("closeAdminModal"),
-      newsContainer=document.getElementById("news-container");
-
-      // Cargar usuarios en select
-      users.forEach(u=>{
-        const o=document.createElement("option"); o.value=u.username; o.textContent=`${u.name} (${u.role})`;
-        usernameSelect.appendChild(o);
-      });
+      adminBtn=document.getElementById("adminBtn"), newsContainer=document.getElementById("news-container");
 
       // Login
       userBtn.onclick=()=>loginModal.style.display="flex";
       closeModal.onclick=()=>{loginModal.style.display="none"; loginMessage.style.display="none";};
       loginForm.onsubmit=e=>{
         e.preventDefault();
-        const u=users.find(us=>us.username===usernameSelect.value);
+        const username=document.getElementById("username").value.trim();
+        const u=users.find(us=>us.username===username);
         if(u){localStorage.setItem("currentUser",JSON.stringify(u)); updateUI(u); loginModal.style.display="none";}
         else{loginMessage.textContent="Usuario no válido"; loginMessage.style.display="block";}
       };
@@ -265,10 +210,6 @@
         } else { userBtn.style.display="flex"; userInfo.style.display="none"; adminBtn.style.display="none"; }
       }
       const cu=localStorage.getItem("currentUser"); if(cu) updateUI(JSON.parse(cu));
-
-      // Admin modal
-      adminBtn.onclick=()=>adminModal.style.display="flex";
-      closeAdminModal.onclick=()=>adminModal.style.display="none";
 
       // Mostrar noticias
       function displayNews(cat="todas"){
@@ -284,12 +225,6 @@
       }
       displayNews();
 
-      // Nav
-      document.querySelectorAll(".nav-item").forEach(it=>{
-        it.onclick=()=>{document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
-          it.classList.add("active"); displayNews(it.dataset.category);};
-      });
-
       // Botón scroll top
       const fb=document.querySelector(".floating-btn");
       fb.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
@@ -298,3 +233,4 @@
   </script>
 </body>
 </html>
+
