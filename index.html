@@ -29,23 +29,22 @@
     .user-info { display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px; }
     .logout-btn { background:none; border:none; color:#fff; cursor:pointer; font-size:0.8rem; text-decoration:underline; }
 
-    /* Modal genérico */
-    .modal,.admin-modal {
+    /* Modal */
+    .modal {
       display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;
+      background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center;
     }
-    .modal-content,.admin-modal-content {
+    .modal-content {
       background:#fff; border-radius:10px; width:90%; max-width:400px; padding:20px;
       box-shadow:0 5px 15px rgba(0,0,0,0.3);
     }
-    .admin-modal-content { max-width:600px; max-height:80vh; overflow-y:auto; }
     .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #eee; }
     .modal-title { font-size:1.1rem; color:#2e7d32; }
     .close-btn { background:none; border:none; font-size:1.4rem; cursor:pointer; color:#666; }
 
     .form-group { margin-bottom:12px; }
     .form-group label { display:block; margin-bottom:5px; font-weight:500; }
-    .form-group input,.form-group select,.form-group textarea {
+    .form-group input {
       width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; font-size:1rem;
     }
     .login-btn {
@@ -65,7 +64,7 @@
     .sub-nav-item { padding:5px 10px; border-radius:15px; font-size:0.8rem; background:#fff; border:1px solid #c8e6c9; color:#2e7d32; cursor:pointer; }
     .sub-nav-item.active { background:#2e7d32; color:#fff; }
 
-    main { padding:15px; padding-bottom:70px; } /* espacio para el footer fijo */
+    main { padding:15px; padding-bottom:70px; }
     .section-title { margin:15px 0; font-size:1.1rem; color:#2e7d32; border-bottom:2px solid #e8f5e9; padding-bottom:5px; }
     .news-card {
       background:#fff; border-radius:10px; overflow:hidden; margin-bottom:15px;
@@ -78,31 +77,14 @@
     .news-excerpt { font-size:0.85rem; color:#555; margin-bottom:10px; }
     .news-meta { font-size:0.75rem; color:#888; display:flex; justify-content:space-between; }
 
-    /* Footer fijo y reducido */
+    /* Footer fijo reducido */
     footer {
-      position:fixed;
-      bottom:0;
-      left:0;
-      width:100%;
-      background:#1b5e20;
-      color:#fff;
-      padding:8px 10px;
-      text-align:center;
-      z-index:999;
-      font-size:0.75rem;
+      position:fixed; bottom:0; left:0; width:100%;
+      background:#1b5e20; color:#fff; padding:8px 10px;
+      text-align:center; z-index:999; font-size:0.75rem;
     }
-    .footer-links {
-      display:flex;
-      justify-content:center;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:5px;
-    }
-    .footer-link {
-      color:#a5d6a7;
-      text-decoration:none;
-      font-size:0.75rem;
-    }
+    .footer-links { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:5px; }
+    .footer-link { color:#a5d6a7; text-decoration:none; font-size:0.75rem; }
 
     .floating-btn {
       position:fixed; bottom:60px; right:15px; width:45px; height:45px;
@@ -110,8 +92,8 @@
       justify-content:center; align-items:center; box-shadow:0 3px 8px rgba(0,0,0,0.2); font-size:1.2rem; cursor:pointer;
     }
 
-    @media (min-width:768px) { .news-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:15px; } }
-    @media (min-width:1024px) { .news-grid { grid-template-columns:repeat(3,1fr); } }
+    /* Bloqueo */
+    .locked { display:none; }
   </style>
 </head>
 <body>
@@ -134,12 +116,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title">Iniciar Sesión</h2>
-        <button class="close-btn" id="closeModal">&times;</button>
       </div>
       <form id="loginForm">
         <div class="form-group">
           <label for="username">Introduce tu usuario:</label>
-          <input type="text" id="username" name="fname"><br><br>
+          <input type="text" id="username" name="fname" required>
         </div>
         <button type="submit" class="login-btn">Acceder</button>
       </form>
@@ -147,65 +128,52 @@
     </div>
   </div>
 
-  <!-- Navegación principal -->
-  <nav class="main-nav">
-    <div class="nav-container">
-      <div class="nav-item active" data-category="todas">Todas</div>
-      <div class="nav-item" data-category="ADMINISTRATIVO">ADMINISTRATIVO</div>
-      <div class="nav-item" data-category="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</div>
-      <div class="nav-item" data-category="CELADOR">CELADOR</div>
-      <div class="nav-item" data-category="ENFERMERIA">ENFERMERIA</div>
-      <div class="nav-item" data-category="MEDICINA">MEDICINA</div>
-      <div class="nav-item" data-category="TCAE">TCAE</div>
-      <div class="nav-item" data-category="TECNICO_LABORATORIO">LABORATORIO</div>
-    </div>
-  </nav>
+  <!-- Contenido bloqueado -->
+  <div id="appContent" class="locked">
+    <!-- Navegación -->
+    <nav class="main-nav">
+      <div class="nav-container">
+        <div class="nav-item active" data-category="todas">Todas</div>
+        <div class="nav-item" data-category="ADMINISTRATIVO">ADMINISTRATIVO</div>
+        <div class="nav-item" data-category="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</div>
+        <div class="nav-item" data-category="CELADOR">CELADOR</div>
+        <div class="nav-item" data-category="ENFERMERIA">ENFERMERIA</div>
+        <div class="nav-item" data-category="MEDICINA">MEDICINA</div>
+        <div class="nav-item" data-category="TCAE">TCAE</div>
+        <div class="nav-item" data-category="TECNICO_LABORATORIO">LABORATORIO</div>
+      </div>
+    </nav>
 
-  <!-- Subnavegaciones (ejemplo ENFERMERIA, TCAE, etc) -->
-  <div class="sub-nav" id="subnav-ENFERMERIA">
-    <div class="sub-nav-container">
-      <div class="sub-nav-item active" data-subcategory="plantillas">Plantillas</div>
-      <div class="sub-nav-item" data-subcategory="turnos">Turnos</div>
-      <div class="sub-nav-item" data-subcategory="formacion">Formación</div>
-      <div class="sub-nav-item" data-subcategory="convenio">Convenio</div>
-      <div class="sub-nav-item" data-subcategory="oposiciones">Oposiciones</div>
+    <!-- Ejemplo subnav -->
+    <div class="sub-nav" id="subnav-ENFERMERIA">
+      <div class="sub-nav-container">
+        <div class="sub-nav-item active" data-subcategory="plantillas">Plantillas</div>
+        <div class="sub-nav-item" data-subcategory="turnos">Turnos</div>
+        <div class="sub-nav-item" data-subcategory="formacion">Formación</div>
+      </div>
     </div>
+
+    <main>
+      <h2 class="section-title" id="current-category">Todas las Noticias</h2>
+      <div class="news-grid" id="news-container"></div>
+    </main>
+
+    <footer>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Inicio</a>
+        <a href="#" class="footer-link">Quiénes Somos</a>
+        <a href="#" class="footer-link">Afiliación</a>
+        <a href="#" class="footer-link">Contacto</a>
+        <a href="#" class="footer-link">Aviso Legal</a>
+      </div>
+      <div>&copy; 2025 CSIF - Todos los derechos reservados.</div>
+    </footer>
   </div>
-
-  <div class="sub-nav" id="subnav-TCAE">
-    <div class="sub-nav-container">
-      <div class="sub-nav-item active" data-subcategory="plantillas">Plantillas</div>
-      <div class="sub-nav-item" data-subcategory="turnos">Turnos</div>
-      <div class="sub-nav-item" data-subcategory="formacion">Formación</div>
-      <div class="sub-nav-item" data-subcategory="convenio">Convenio</div>
-      <div class="sub-nav-item" data-subcategory="oposiciones">Oposiciones</div>
-    </div>
-  </div>
-
-  <!-- Aquí irían el resto de subnavs como en tu archivo original... -->
-
-  <!-- Contenido -->
-  <main>
-    <h2 class="section-title" id="current-category">Todas las Noticias</h2>
-    <div class="news-grid" id="news-container"></div>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <div class="footer-links">
-      <a href="#" class="footer-link">Inicio</a>
-      <a href="#" class="footer-link">Quiénes Somos</a>
-      <a href="#" class="footer-link">Afiliación</a>
-      <a href="#" class="footer-link">Contacto</a>
-      <a href="#" class="footer-link">Aviso Legal</a>
-    </div>
-    <div>&copy; 2025 CSIF - Todos los derechos reservados.</div>
-  </footer>
 
   <div class="floating-btn">↑</div>
 
   <script>
-    // Usuarios predefinidos
+    // Usuarios demo
     const users = [
       { username:"10000000A", name:"Administrador CSIF", role:"admin" },
       { username:"00000001A", name:"María López", role:"Afiliado" },
@@ -218,30 +186,52 @@
     ]};
 
     document.addEventListener("DOMContentLoaded",()=>{
-      const userBtn=document.getElementById("userBtn"), loginModal=document.getElementById("loginModal"),
-      closeModal=document.getElementById("closeModal"), loginForm=document.getElementById("loginForm"),
-      userInfo=document.getElementById("userInfo"), userName=document.getElementById("userName"),
-      logoutBtn=document.getElementById("logoutBtn"), loginMessage=document.getElementById("loginMessage"),
-      adminBtn=document.getElementById("adminBtn"), newsContainer=document.getElementById("news-container");
+      const userBtn=document.getElementById("userBtn"),
+            loginModal=document.getElementById("loginModal"),
+            loginForm=document.getElementById("loginForm"),
+            userInfo=document.getElementById("userInfo"),
+            userName=document.getElementById("userName"),
+            logoutBtn=document.getElementById("logoutBtn"),
+            loginMessage=document.getElementById("loginMessage"),
+            adminBtn=document.getElementById("adminBtn"),
+            newsContainer=document.getElementById("news-container"),
+            appContent=document.getElementById("appContent");
 
-      // Login
-      userBtn.onclick=()=>loginModal.style.display="flex";
-      closeModal.onclick=()=>{loginModal.style.display="none"; loginMessage.style.display="none";};
-      loginForm.onsubmit=e=>{
-        e.preventDefault();
-        const username=document.getElementById("username").value.trim();
-        const u=users.find(us=>us.username===username);
-        if(u){localStorage.setItem("currentUser",JSON.stringify(u)); updateUI(u); loginModal.style.display="none";}
-        else{loginMessage.textContent="Usuario no válido"; loginMessage.style.display="block";}
-      };
-      logoutBtn.onclick=()=>{localStorage.removeItem("currentUser"); updateUI();};
+      // Bloqueo
+      function lockApp(){
+        appContent.classList.add("locked");
+        loginModal.style.display="flex";
+      }
+      function unlockApp(){
+        appContent.classList.remove("locked");
+        loginModal.style.display="none";
+      }
 
+      // UI según login
       function updateUI(u){
         if(u){ userBtn.style.display="none"; userInfo.style.display="flex"; userName.textContent=u.name;
           if(u.role==="admin") adminBtn.style.display="flex";
         } else { userBtn.style.display="flex"; userInfo.style.display="none"; adminBtn.style.display="none"; }
       }
-      const cu=localStorage.getItem("currentUser"); if(cu) updateUI(JSON.parse(cu));
+
+      // Validar login
+      loginForm.onsubmit=e=>{
+        e.preventDefault();
+        const username=document.getElementById("username").value.trim();
+        const u=users.find(us=>us.username===username);
+        if(u){
+          localStorage.setItem("currentUser",JSON.stringify(u));
+          updateUI(u); unlockApp();
+        } else {
+          loginMessage.textContent="Usuario no válido"; loginMessage.style.display="block";
+        }
+      };
+
+      // Logout
+      logoutBtn.onclick=()=>{
+        localStorage.removeItem("currentUser");
+        updateUI(); lockApp();
+      };
 
       // Mostrar noticias
       function displayNews(cat="todas"){
@@ -255,13 +245,11 @@
           newsContainer.appendChild(c);
         });
       }
-      displayNews();
 
-      // Categorías
-      document.querySelectorAll(".nav-item").forEach(it=>{
-        it.onclick=()=>{document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
-          it.classList.add("active"); displayNews(it.dataset.category);};
-      });
+      // Inicialización
+      const cu=localStorage.getItem("currentUser");
+      if(cu){ updateUI(JSON.parse(cu)); unlockApp(); displayNews(); }
+      else{ lockApp(); }
 
       // Botón scroll top
       const fb=document.querySelector(".floating-btn");
@@ -271,5 +259,3 @@
   </script>
 </body>
 </html>
-
-  
