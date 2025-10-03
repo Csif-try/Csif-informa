@@ -1,1 +1,296 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSIF Informa</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+    body { background:#fff; color:#333; line-height:1.6; min-height:100vh; }
+    body::after {
+      content:""; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:url('csif.png') no-repeat center/90%; opacity:0.2; z-index:-1; pointer-events:none;
+    }
+
+    header {
+      background:#2e7d32; color:#fff; padding:10px 15px;
+      position:sticky; top:0; z-index:100; display:flex; justify-content:space-between; align-items:center;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    .logo { font-size:1.2rem; font-weight:bold; }
+    .header-right { display:flex; align-items:center; gap:15px; }
+    .csif-logo { height:50px; width:auto; }
+    .user-btn,.admin-btn {
+      background:rgba(255,255,255,0.2); border:none; color:#fff; padding:6px 12px; border-radius:20px;
+      cursor:pointer; display:flex; align-items:center; gap:6px; transition:.3s;
+    }
+    .user-btn:hover,.admin-btn:hover { background:rgba(255,255,255,0.3); }
+    .admin-btn { display:none; }
+    .user-info { display:none; align-items:center; gap:8px; background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px; }
+    .logout-btn { background:none; border:none; color:#fff; cursor:pointer; font-size:0.8rem; text-decoration:underline; }
+
+    /* Modal */
+    .modal {
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center;
+    }
+    .modal-content {
+      background:#fff; border-radius:10px; width:90%; max-width:400px; padding:20px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #eee; }
+    .modal-title { font-size:1.1rem; color:#2e7d32; }
+
+    .form-group { margin-bottom:12px; }
+    .form-group label { display:block; margin-bottom:5px; font-weight:500; }
+    .form-group input {
+      width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; font-size:1rem;
+    }
+    .login-btn {
+      width:100%; padding:10px; background:#2e7d32; color:#fff; border:none; border-radius:5px;
+      font-size:1rem; cursor:pointer; margin-top:10px;
+    }
+    .login-btn:hover { background:#1b5e20; }
+
+    nav.main-nav { background:#1b5e20; padding:8px 0; position:sticky; top:60px; z-index:99; overflow-x:auto; }
+    .nav-container { display:flex; gap:8px; padding:0 10px; }
+    .nav-item { padding:6px 12px; border-radius:20px; background:rgba(255,255,255,0.15); color:#fff; cursor:pointer; font-size:0.85rem; white-space:nowrap; }
+    .nav-item.active { background:#fff; color:#1b5e20; font-weight:bold; }
+
+    .sub-nav { display:none; background:#e8f5e9; padding:8px; }
+    .sub-nav.active { display:block; }
+    .sub-nav-container { display:flex; gap:8px; overflow-x:auto; }
+    .sub-nav-item { padding:5px 10px; border-radius:15px; font-size:0.8rem; background:#fff; border:1px solid #c8e6c9; color:#2e7d32; cursor:pointer; }
+    .sub-nav-item.active { background:#2e7d32; color:#fff; }
+
+    main { padding:15px; padding-bottom:70px; }
+    .section-title { margin:15px 0; font-size:1.1rem; color:#2e7d32; border-bottom:2px solid #e8f5e9; padding-bottom:5px; }
+    .news-card {
+      background:#fff; border-radius:10px; overflow:hidden; margin-bottom:15px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1); border-left:4px solid #2e7d32;
+    }
+    .news-card img { width:100%; height:160px; object-fit:cover; }
+    .news-content { padding:12px; }
+    .news-category { display:inline-block; background:#e8f5e9; color:#2e7d32; padding:3px 8px; border-radius:12px; font-size:0.75rem; margin-bottom:8px; font-weight:bold; }
+    .news-title { font-size:1rem; margin-bottom:8px; color:#333; }
+    .news-excerpt { font-size:0.85rem; color:#555; margin-bottom:10px; }
+    .news-meta { font-size:0.75rem; color:#888; display:flex; justify-content:space-between; }
+
+    /* Footer fijo reducido */
+    footer {
+      position:fixed; bottom:0; left:0; width:100%;
+      background:#1b5e20; color:#fff; padding:8px 10px;
+      text-align:center; z-index:999; font-size:0.75rem;
+    }
+    .footer-links { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:5px; }
+    .footer-link { color:#a5d6a7; text-decoration:none; font-size:0.75rem; }
+
+    .floating-btn {
+      position:fixed; bottom:60px; right:15px; width:45px; height:45px;
+      background:#2e7d32; color:#fff; border-radius:50%; display:none;
+      justify-content:center; align-items:center; box-shadow:0 3px 8px rgba(0,0,0,0.2); font-size:1.2rem; cursor:pointer;
+    }
+
+    /* Bloqueo */
+    .locked { display:none; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">CSIF Noticias</div>
+    <div class="header-right">
+      <img src="csif.png" alt="Logo CSIF" class="csif-logo">
+      <button class="admin-btn" id="adminBtn">⚙ Administrar</button>
+      <div class="user-info" id="userInfo">
+        <span id="userName">Usuario</span>
+        <button class="logout-btn" id="logoutBtn">Cerrar Sesión</button>
+      </div>
+      <button class="user-btn" id="userBtn">👤 Iniciar Sesión</button>
+    </div>
+  </header>
+
+  <!-- Modal de Login -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Iniciar Sesión</h2>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Introduce tu usuario:</label>
+          <input type="text" id="username" name="fname" required>
+        </div>
+        <button type="submit" class="login-btn">Acceder</button>
+      </form>
+      <div id="loginMessage" style="margin-top:10px; color:red; display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Contenido bloqueado -->
+  <div id="appContent" class="locked">
+    <!-- Navegación -->
+    <nav class="main-nav">
+      <div class="nav-container">
+        <div class="nav-item active" data-category="todas">Todas</div>
+        <div class="nav-item" data-category="ADMINISTRATIVO">ADMINISTRATIVO</div>
+        <div class="nav-item" data-category="AUXILIAR_ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</div>
+        <div class="nav-item" data-category="CELADOR">CELADOR</div>
+        <div class="nav-item" data-category="ENFERMERIA">ENFERMERIA</div>
+        <div class="nav-item" data-category="MEDICINA">MEDICINA</div>
+        <div class="nav-item" data-category="TCAE">TCAE</div>
+        <div class="nav-item" data-category="TECNICO_LABORATORIO">LABORATORIO</div>
+      </div>
+    </nav>
+
+    <!-- Ejemplo subnav -->
+    <div class="sub-nav" id="subnav-ENFERMERIA">
+      <div class="sub-nav-container">
+        <div class="sub-nav-item active" data-subcategory="plantillas">Plantillas</div>
+        <div class="sub-nav-item" data-subcategory="turnos">Turnos</div>
+        <div class="sub-nav-item" data-subcategory="formacion">Formación</div>
+      </div>
+    </div>
+
+    <main>
+      <h2 class="section-title" id="current-category">Todas las Noticias</h2>
+      <div class="news-grid" id="news-container"></div>
+    </main>
+
+    <footer>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Inicio</a>
+        <a href="#" class="footer-link">Quiénes Somos</a>
+        <a href="#" class="footer-link">Afiliación</a>
+        <a href="#" class="footer-link">Contacto</a>
+        <a href="#" class="footer-link">Aviso Legal</a>
+      </div>
+      <div>&copy; 2025 CSIF - Todos los derechos reservados.</div>
+    </footer>
+  </div>
+
+  <div class="floating-btn">↑</div>
+
+  <script>
+    // Usuarios demo
+    const users = [
+      { username:"10000000A", name:"Administrador CSIF", role:"admin" },
+      { username:"00000001A", name:"María López", role:"Afiliado" },
+      { username:"00000002A", name:"Carlos Rodríguez", role:"Afiliado" }
+    ];
+
+    let newsData = { todas:[
+      {id:1,category:"ENFERMERIA",subcategory:"plantillas",title:"CSIF logra aumento de plantilla",excerpt:"Contratación de 200 nuevos profesionales",image:"https://via.placeholder.com/400x200?text=Enfermería",date:"Hace 2h"},
+      {id:2,category:"TCAE",subcategory:"turnos",title:"Mejoras en los turnos TCAE",excerpt:"Negociación de rotación de turnos",image:"https://via.placeholder.com/400x200?text=TCAE",date:"Hace 5h"}
+    ]};
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      const userBtn=document.getElementById("userBtn"),
+            loginModal=document.getElementById("loginModal"),
+            loginForm=document.getElementById("loginForm"),
+            userInfo=document.getElementById("userInfo"),
+            userName=document.getElementById("userName"),
+            logoutBtn=document.getElementById("logoutBtn"),
+            loginMessage=document.getElementById("loginMessage"),
+            adminBtn=document.getElementById("adminBtn"),
+            newsContainer=document.getElementById("news-container"),
+            appContent=document.getElementById("appContent"),
+            currentCategoryTitle=document.getElementById("current-category");
+
+      // Bloqueo
+      function lockApp(){
+        appContent.classList.add("locked");
+        loginModal.style.display="flex";
+      }
+      function unlockApp(){
+        appContent.classList.remove("locked");
+        loginModal.style.display="none";
+      }
+
+      // UI según login
+      function updateUI(u){
+        if(u){ userBtn.style.display="none"; userInfo.style.display="flex"; userName.textContent=u.name;
+          if(u.role==="admin") adminBtn.style.display="flex";
+        } else { userBtn.style.display="flex"; userInfo.style.display="none"; adminBtn.style.display="none"; }
+      }
+
+      // Validar login
+      loginForm.onsubmit=e=>{
+        e.preventDefault();
+        const username=document.getElementById("username").value.trim();
+        const u=users.find(us=>us.username===username);
+        if(u){
+          localStorage.setItem("currentUser",JSON.stringify(u));
+          updateUI(u); unlockApp(); displayNews();
+        } else {
+          loginMessage.textContent="Usuario no válido"; loginMessage.style.display="block";
+        }
+      };
+
+      // Logout
+      logoutBtn.onclick=()=>{
+        localStorage.removeItem("currentUser");
+        updateUI(); lockApp();
+      };
+
+      // Mostrar noticias
+      function displayNews(cat="todas", subcat=null){
+        newsContainer.innerHTML="";
+        let data = newsData[cat] || [];
+        if(subcat){ data = data.filter(n=>n.subcategory===subcat); }
+        data.forEach(n=>{
+          const c=document.createElement("div"); c.className="news-card";
+          c.innerHTML=`<img src="${n.image}" loading="lazy"><div class="news-content">
+          <span class="news-category">${n.category}</span>
+          <h3 class="news-title">${n.title}</h3><p class="news-excerpt">${n.excerpt}</p>
+          <div class="news-meta"><span>${n.date}</span><span>CSIF</span></div></div>`;
+          newsContainer.appendChild(c);
+        });
+        currentCategoryTitle.textContent = (cat==="todas") ? "Todas las Noticias" : cat;
+      }
+
+      // Navegación categorías
+      document.querySelectorAll(".nav-item").forEach(it=>{
+        it.onclick=()=>{
+          document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
+          it.classList.add("active");
+
+          // ocultar todos subnav
+          document.querySelectorAll(".sub-nav").forEach(s=>s.classList.remove("active"));
+
+          const cat=it.dataset.category;
+          const subnav=document.getElementById("subnav-"+cat);
+          if(subnav) subnav.classList.add("active");
+
+          displayNews(cat);
+        };
+      });
+
+      // Navegación subcategorías
+      document.querySelectorAll(".sub-nav-item").forEach(it=>{
+        it.onclick=()=>{
+          const parent = it.closest(".sub-nav");
+          parent.querySelectorAll(".sub-nav-item").forEach(i=>i.classList.remove("active"));
+          it.classList.add("active");
+
+          const cat = parent.id.replace("subnav-","");
+          const subcat = it.dataset.subcategory;
+          displayNews(cat,subcat);
+        };
+      });
+
+      // Inicialización
+      const cu=localStorage.getItem("currentUser");
+      if(cu){ updateUI(JSON.parse(cu)); unlockApp(); displayNews(); }
+      else{ lockApp(); }
+
+      // Botón scroll top
+      const fb=document.querySelector(".floating-btn");
+      fb.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+      window.onscroll=()=>{fb.style.display=window.scrollY>200?"flex":"none";}
+    });
+  </script>
+</body>
+</html>
+
